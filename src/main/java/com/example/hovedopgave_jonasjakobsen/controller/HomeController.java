@@ -46,7 +46,10 @@ public class HomeController {
 
         return "index";
     }
-
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
+    }
     @GetMapping("/auth/login")
     public String loginPage() {
         return "login/loginPage";
