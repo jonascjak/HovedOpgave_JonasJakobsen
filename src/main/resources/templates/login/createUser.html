@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title layout:fragment="title">Opret bruger</title>
+
+    <th:block layout:fragment="page-styles">
+        <link rel="stylesheet" th:href="@{/css/login.css}">
+    </th:block>
+</head>
+
+<body>
+
+<main layout:fragment="content">
+
+    <div id="login">
+        <h1>Opret bruger</h1>
+
+        <form th:action="@{/auth/createuser}" method="post" class="login-form">
+
+            <label>Brugernavn</label>
+            <input type="text" name="username" required>
+
+            <label>Kodeord</label>
+            <input type="password" name="password" required>
+
+            <label>Navn</label>
+            <input type="text" name="name" required>
+
+            <button type="submit" class="button">Opret bruger</button>
+
+        </form>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

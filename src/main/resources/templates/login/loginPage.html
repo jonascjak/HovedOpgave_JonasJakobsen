@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title layout:fragment="title">Login</title>
+    <th:block layout:fragment="page-styles">
+        <link rel="stylesheet" th:href="@{/css/login.css}">
+    </th:block>
+</head>
+
+<body>
+<main layout:fragment="content">
+    <div id="login">
+
+        <h1>Figurspil Danmark</h1>
+
+        <form th:action="@{/auth/login}"
+              method="post"
+              class="login-form">
+
+            <input type="text"
+                   name="username"
+                   placeholder="Brugernavn">
+
+            <input type="password"
+                   name="password"
+                   placeholder="Kodeord">
+
+            <button type="submit" class="button">
+                Login
+            </button>
+        </form>
+
+        <form action="/auth/createuser"
+              method="get"
+              class="login-form">
+
+            <button type="submit" class="button">
+                Opret bruger
+            </button>
+        </form>
+
+    </div>
+</main>
+</body>
+</html>

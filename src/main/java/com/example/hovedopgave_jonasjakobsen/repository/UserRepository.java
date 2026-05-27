@@ -1,7 +1,7 @@
-package Repository;
+package com.example.hovedopgave_jonasjakobsen.repository;
 
 
-import Model.User;
+import com.example.hovedopgave_jonasjakobsen.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

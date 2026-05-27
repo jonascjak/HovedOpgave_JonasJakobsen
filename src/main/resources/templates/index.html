@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title layout:fragment="title">Login</title>
+</head>
+<body>
+    <main layout:fragment="content">
+        <div id="calendar">
+            <div th:each="day : ${#numbers.sequence(1, T(java.time.LocalDate).of(year, month, 1).lengthOfMonth())}">
+                <div class="calendar-day">
+                    <div class="calendar-day"
+                            th:with="date=${T(java.time.LocalDate).of(year, month, day)}"
+                            th:classappend="${date.equals(T(java.time.LocalDate).now())} ? ' today' : ''"
+                    >
+
+                        <div class="calendar-header">
+                          <!--  <h3 th:text="${date.dayOfMonth}"></h3> -->
+
+                            <button
+                                    sec:authorize="hasRole('COMPANY')"
+                                    class="day-button"
+                                    th:attr="data-date=${date}">
+
+                                <span th:text="${date.dayOfMonth}"></span>
+
+                            </button>
+
+                            <div
+                                    sec:authorize="!hasRole('COMPANY')"
+                                    class="day-label">
+
+                                <span th:text="${date.dayOfMonth}"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="calendar-body">
+                            <!--
+                            <div th:if="${eventMap[date] != null}">
+                                <div th:each="event : ${eventMap[date]}">
+                                    <p th:text="${event.eventName}"></p>
+                                </div>
+                            </div>
+                            -->
+                            <div th:each="event : ${eventMap[date]}">
+
+                                <!-- PRIVATE USER -->
+                                <button
+                                        sec:authorize="hasRole('PRIVATE')"
+                                        class="event-card"
+                                        th:attr="data-event-id=${event.id}">
+
+                                    <span th:text="${event.eventName}"></span>
+
+                                </button>
+
+                                <!-- NON PRIVATE USERS -->
+                                <div
+                                        sec:authorize="!hasRole('PRIVATE')"
+                                        class="event-card-static">
+
+                                    <span th:text="${event.eventName}"></span>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="overlay">
+
+            <div id="popup-content"></div>
+
+        </div>
+        <script>
+            document.querySelectorAll(".day-button").forEach(button => {
+
+                button.addEventListener("click", () => {
+
+                    const date = button.dataset.date;
+
+                    openCreateEventModal(date);
+
+                });
+
+            });
+
+            document.querySelectorAll(".event-card").forEach(card => {
+
+                card.addEventListener("click", () => {
+
+                    const eventId = card.dataset.eventId;
+
+                    openEventDetailsModal(eventId);
+
+                });
+
+            });
+
+            function openOverlay(html) {
+
+                document.getElementById("popup-content").innerHTML = html;
+
+                document.getElementById("overlay").style.display = "flex";
+            }
+
+            function closeOverlay() {
+
+                document.getElementById("overlay").style.display = "none";
+            }
+            function openCreateEventModal(date) {
+                openOverlay(`<h2>Create event for ${date}</h2>`);
+            }
+
+            function openEventDetailsModal(eventId) {
+                openOverlay(`<h2>Event ID: ${eventId}</h2>`);
+            }
+        </script>
+    </main>
+</body>
+</html>

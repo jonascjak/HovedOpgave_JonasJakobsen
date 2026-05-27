@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title layout:fragment="title">Figurspil Danmark</title>
+
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+
+
+    <th:block layout:fragment="page-styles"></th:block>
+</head>
+
+<body>
+
+<header>
+    <div id="header-middel">
+        Figurspil Danmark
+    </div>
+
+    <div id="header-right-side">
+
+        <a sec:authorize="isAnonymous()"
+           th:href="@{/auth/login}"
+           class="button">
+            Log ind
+        </a>
+
+        <form sec:authorize="isAuthenticated()"
+              th:action="@{/logout}"
+              method="post">
+            <button type="submit" class="button">
+                Log ud
+            </button>
+        </form>
+
+    </div>
+</header>
+
+<nav>
+    <a th:href="@{/}">Hjem</a>
+    <a th:href="@{/butikker}">Butikker</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/profil}">Profil</a>
+</nav>
+
+<main layout:fragment="content">
+</main>
+
+<footer>
+    <div class="footer-left">
+        <a th:href="@{/om-os}">Om os</a>
+        <a th:href="@{/kontakt}">Kontakt</a>
+        <a th:href="@{/privatlivspolitik}">Privatliv</a>
+    </div>
+
+    <div class="footer-right">
+        © <span th:text="${#dates.year(#dates.createNow())}"></span> Figurspil Danmark
+    </div>
+</footer>
+
+</body>
+</html>
