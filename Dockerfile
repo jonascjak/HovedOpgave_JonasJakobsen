@@ -5,9 +5,8 @@ WORKDIR /app
 COPY . .
 
 RUN chmod +x mvnw
-
 RUN ./mvnw clean package -DskipTests
 
-EXPOSE 8080
+EXPOSE 10000
 
-CMD java -jar $(ls target/*.jar | head -n 1)
+ENTRYPOINT ["java", "-jar", "target/HovedOpgave_JonasJakobsen-0.0.1-SNAPSHOT.jar"]
