@@ -1,8 +1,10 @@
 package com.example.hovedopgave_jonasjakobsen.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "company_users")
 public class CompanyUser extends User {
     private String companyAddress;
 
