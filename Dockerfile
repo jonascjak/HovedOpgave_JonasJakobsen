@@ -1,4 +1,11 @@
-FROM ubuntu:latest
-LABEL authors="Jonas Jakobsen"
+FROM eclipse-temurin:17-jdk
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY . .
+
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "target/*.jar"]
