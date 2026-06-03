@@ -52,6 +52,5 @@ public class TestDataLoader implements CommandLineRunner {
 
             userRepository.save(privateUser);
         }
-
     }
 }

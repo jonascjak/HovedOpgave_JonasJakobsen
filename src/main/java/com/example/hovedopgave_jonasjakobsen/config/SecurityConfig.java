@@ -15,7 +15,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/**", "/css/**", "/static/test.js").permitAll()
+                        .requestMatchers("/", "/index","/auth/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/event/create").hasRole("COMPANY")
+                        .requestMatchers("/event/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -27,6 +29,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                ).csrf(csrf -> csrf
+                        .disable()
                 );
 
         return http.build();

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Event</title>
+    <script th:src="@{/js/calendarLogic.js}"></script>
+</head>
+<body>
+    <main layout:fragment="content">
+        <h2 th:text="${event.eventName}">Event:</h2>
+        <p th:text="${event.eventGame}"></p>
+        <p th:text="${event.Description}"></p>
+        <p th:text="${event.date}"></p>
+        <p th:text="${event.startTime}"></p>
+        <h2>Deltager</h2>
+        <li th:each="participant : ${event.participants}" th:text="${participant.getPrivateUser().getUsername()}"></li>
+        <button
+                sec:authorize="hasRole('COMPANY')"
+                class="button" onclick="openEditModal()">
+            <span>Redigere Event</span>
+        </button>
+        <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post">
+            <button sec:authorize="hasRole('COMPANY')" class="button" onclick="return deleteEvent()">
+                Slet Event
+            </button>
+        </form>
+        <form th:action="@{/event/{id}/join(id=${event.id})}" method="post">
+            <button th:if="${!alreadyJoined}" sec:authorize="hasRole('PRIVATE')" type="submit">
+                Deltag
+            </button>
+            <span th:if="${alreadyJoined}">Du deltager allerede</span>
+        </form>
+
+        <div id="overlay" class="overlay hidden">
+            <div id="popup-content" class="modal">
+                <button type="button" onclick="closeOverlay()">X</button>
+                <h2>Redigere Event</h2>
+                <form th:action="@{/event/update}" method="post">
+                    <input type="hidden" name="id" th:value="${event.id}">
+
+                    <label>Event Navn</label>
+                    <input type="text" name="eventName" th:value="${event.eventName}">
+
+                    <label>Spil</label>
+                    <input type="text" name="eventGame" th:value="${event.eventGame}">
+
+                    <label>Beskrivelse</label>
+                    <textarea name="eventDescription" th:value="${event.description}" ></textarea>
+
+                    <label>Start Tidspunkt</label>
+                    <input type="time" name="startTime" th:value="${event.startTime}">
+                    <button type="submit">Gem Ændringer</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

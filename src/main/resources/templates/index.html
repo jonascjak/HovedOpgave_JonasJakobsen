@@ -3,7 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{fragments/layout}">
 <head>
-    <title layout:fragment="title">Login</title>
+    <title layout:fragment="title">Index</title>
+    <script th:src="@{/js/calendarLogic.js}"></script>
 </head>
 <body>
     <main layout:fragment="content">
@@ -16,7 +17,6 @@
                     >
 
                         <div class="calendar-header">
-                          <!--  <h3 th:text="${date.dayOfMonth}"></h3> -->
 
                             <button
                                     sec:authorize="hasRole('COMPANY')"
@@ -35,92 +35,41 @@
 
                             </div>
                         </div>
-
-                        <div class="calendar-body">
-                            <!--
-                            <div th:if="${eventMap[date] != null}">
-                                <div th:each="event : ${eventMap[date]}">
-                                    <p th:text="${event.eventName}"></p>
+                            <div class="calendar-body">
+                                <div th:each="event : ${events}"
+                                     th:if="${event.date == date}">
+                                    <a th:href="@{/event/{id}(id=${event.id})}">
+                                        <span th:text="${event.eventName}"></span>
+                                    </a>
                                 </div>
                             </div>
-                            -->
-                            <div th:each="event : ${eventMap[date]}">
-
-                                <!-- PRIVATE USER -->
-                                <button
-                                        sec:authorize="hasRole('PRIVATE')"
-                                        class="event-card"
-                                        th:attr="data-event-id=${event.id}">
-
-                                    <span th:text="${event.eventName}"></span>
-
-                                </button>
-
-                                <!-- NON PRIVATE USERS -->
-                                <div
-                                        sec:authorize="!hasRole('PRIVATE')"
-                                        class="event-card-static">
-
-                                    <span th:text="${event.eventName}"></span>
-
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
+            <div id="overlay" class="overlay hidden">
+                <div id="popup-content" class="modal">
+                    <button type="button" onclick="closeOverlay()">X</button>
+                    <h2>Opret Event</h2>
+                    <form th:action="@{/event/create}" method="post">
+                        <input type="hidden" name="eventDate" id="eventDateInput">
 
+                        <label>Event Navn</label>
+                        <input type="text" name="eventName" required minlength="3" maxlength="50">
+
+                        <label>Spil</label>
+                        <input type="text" name="eventGame" required minlength="3" maxlength="50">
+
+                        <label>Beskrivelse</label>
+                        <textarea name="eventDescription" maxlength="500" placeholder="Valgfrit"></textarea>
+
+                        <label>Start Tidspunkt</label>
+                        <input type="time" name="startTime" required>
+
+                        <button type="submit">Opret Event</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div id="overlay">
-
-            <div id="popup-content"></div>
-
-        </div>
-        <script>
-            document.querySelectorAll(".day-button").forEach(button => {
-
-                button.addEventListener("click", () => {
-
-                    const date = button.dataset.date;
-
-                    openCreateEventModal(date);
-
-                });
-
-            });
-
-            document.querySelectorAll(".event-card").forEach(card => {
-
-                card.addEventListener("click", () => {
-
-                    const eventId = card.dataset.eventId;
-
-                    openEventDetailsModal(eventId);
-
-                });
-
-            });
-
-            function openOverlay(html) {
-
-                document.getElementById("popup-content").innerHTML = html;
-
-                document.getElementById("overlay").style.display = "flex";
-            }
-
-            function closeOverlay() {
-
-                document.getElementById("overlay").style.display = "none";
-            }
-            function openCreateEventModal(date) {
-                openOverlay(`<h2>Create event for ${date}</h2>`);
-            }
-
-            function openEventDetailsModal(eventId) {
-                openOverlay(`<h2>Event ID: ${eventId}</h2>`);
-            }
-        </script>
     </main>
 </body>
 </html>

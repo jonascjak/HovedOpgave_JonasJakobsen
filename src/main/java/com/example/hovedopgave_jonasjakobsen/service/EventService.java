@@ -1,12 +1,16 @@
 package com.example.hovedopgave_jonasjakobsen.service;
 
-import com.example.hovedopgave_jonasjakobsen.model.Event;
+import com.example.hovedopgave_jonasjakobsen.model.*;
+import com.example.hovedopgave_jonasjakobsen.repository.EventParticipantRepository;
 import com.example.hovedopgave_jonasjakobsen.repository.EventRepository;
+import com.example.hovedopgave_jonasjakobsen.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -14,14 +18,76 @@ public class EventService {
     @Autowired
     EventRepository eventRepository;
 
-    public List<Event> getEventsForMonth(int year, int month){
+    @Autowired
+    UserRepository userRepository;
 
-        LocalDate start = LocalDate.of(year, month, 1);
+    @Autowired
+    EventParticipantRepository eventParticipantRepository;
+    public boolean createEvent(String eventName, String eventGame, String eventDescription, LocalDate date, LocalTime startTime, String userName){
+        if(eventName == null || eventName.length() < 3 || eventName.length() > 50){
+            return false;
+        }
+        if(eventGame == null || eventGame.length() < 3 || eventGame.length() > 50){
+            return false;
+        }
+        if(eventDescription.length() > 500){
+            return false;
+        }
 
-        LocalDate end = start.withDayOfMonth(
-                start.lengthOfMonth()
-        );
+        Optional<User> userOptional = userRepository.findByUsername(userName);
+        User user = userOptional.get();
 
-        return eventRepository.findByDateBetween(start, end);
+        if (!(user instanceof CompanyUser companyUser)){
+            return false;
+        }
+        Event event = new Event();
+
+        event.setEventName(eventName);
+        event.setEventGame(eventGame);
+        event.setDescription(eventDescription);
+        event.setDate(date);
+        event.setStartTime(startTime);
+        event.setAddress(companyUser.getCompanyAddress());
+        event.setEventOrganiser(companyUser);
+
+        eventRepository.save(event);
+        return true;
+    }
+
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
+    }
+
+    public Event findById(long id) {
+        return eventRepository.findById(id).orElse(null);
+    }
+
+    public void updateEvent(long id, String eventName, String eventGame, String eventDescription, LocalTime startTime) {
+        Event event = eventRepository.getReferenceById(id);
+
+        event.setEventName(eventName);
+        event.setEventGame(eventGame);
+        event.setDescription(eventDescription);
+        event.setStartTime(startTime);
+
+        eventRepository.save(event);
+    }
+
+    public void joinEvent(long id, String name) {
+        Event event = eventRepository.findById(id).orElseThrow();
+
+        PrivateUser user = (PrivateUser) userRepository.findByUsername(name).orElseThrow();
+
+        EventParticipant participant = new EventParticipant();
+        participant.setEvent(event);
+        participant.setPrivateUser(user);
+
+
+        eventParticipantRepository.save(participant);
+
+    }
+
+    public void deleteEvent(long id) {
+        eventRepository.deleteById(id);
     }
 }

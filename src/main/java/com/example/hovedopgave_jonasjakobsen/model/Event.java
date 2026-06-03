@@ -1,10 +1,12 @@
 package com.example.hovedopgave_jonasjakobsen.model;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Event {
@@ -12,23 +14,41 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     private LocalDate date;
 
+    @NotNull
     private LocalTime startTime;
+
+    @NotNull
     private String eventName;
 
+    @NotNull
     private String eventGame;
 
-    @Column(length = 1000)
+
+    @Column(length = 500)
     private String description;
 
     private String address;
 
     @ManyToOne
+    @NotNull
     private CompanyUser eventOrganiser;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventParticipant> participants = new ArrayList<>();
 
     public long getId() {
         return id;
+    }
+
+    public List<EventParticipant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<EventParticipant> participants) {
+        this.participants = participants;
     }
 
     public void setId(long id) {
@@ -90,4 +110,6 @@ public class Event {
     public void setEventOrganiser(CompanyUser eventOrganiser) {
         this.eventOrganiser = eventOrganiser;
     }
+
+
 }
