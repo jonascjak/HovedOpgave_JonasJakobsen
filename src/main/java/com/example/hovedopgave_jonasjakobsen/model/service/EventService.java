@@ -76,15 +76,19 @@ public class EventService {
     public boolean joinEvent(long id, String name) {
         Event event = eventRepository.findById(id).orElseThrow();
 
-        PrivateUser user = (PrivateUser) userRepository.findByUsername(name).orElseThrow();
+        User foundUser = userRepository.findByUsername(name).orElseThrow();
 
-        EventParticipant participant = new EventParticipant();
-        if(eventParticipantRepository.existsByEventIdAndPrivateUserUsername(id,name)){
+        if (!(foundUser instanceof PrivateUser user)) {
             return false;
         }
-            participant.setEvent(event);
-            participant.setPrivateUser(user);
 
+        if (eventParticipantRepository.existsByEventIdAndPrivateUserUsername(id, name)) {
+            return false;
+        }
+
+        EventParticipant participant = new EventParticipant();
+        participant.setEvent(event);
+        participant.setPrivateUser(user);
 
         eventParticipantRepository.save(participant);
 

@@ -1,8 +1,7 @@
 package com.example.hovedopgave_jonasjakobsen.model;
 
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -14,16 +13,16 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate date;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalTime startTime;
 
-    @NotNull
+    @Column(nullable = false)
     private String eventName;
 
-    @NotNull
+    @Column(nullable = false)
     private String eventGame;
 
 
@@ -33,7 +32,7 @@ public class Event {
     private String address;
 
     @ManyToOne
-    @NotNull
+    @Column(nullable = false)
     private CompanyUser eventOrganiser;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)

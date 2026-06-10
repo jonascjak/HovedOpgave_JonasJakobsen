@@ -16,8 +16,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index","/auth/**", "/css/**", "/js/**", "/butikker", "/om-os", "/privatlivspolitik", "/kontakt").permitAll()
-                        .requestMatchers("/event/create").hasRole("COMPANY")
-                        .requestMatchers("/event/**","/profil", "/profil/**").authenticated()
+                        .requestMatchers("/event/create", "/event/update", "/event/*/delete").hasRole("COMPANY")
+                        .requestMatchers("/event/*/join").hasRole("PRIVATE")
+                        .requestMatchers("/profil", "/profil/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

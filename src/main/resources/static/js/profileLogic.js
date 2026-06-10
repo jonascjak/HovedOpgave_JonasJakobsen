@@ -8,7 +8,7 @@ function closeOverlay() {
 
 function validatePasswordMatch(){
     const password = document.getElementById("password").value
-    const passwordcheck = document.getElementById("passwordcheck").value
+    const passwordcheck = document.getElementById("passwordCheck").value
     const error = document.getElementById("error");
 
     if(password !== passwordcheck){
