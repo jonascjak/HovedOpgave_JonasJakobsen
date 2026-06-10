@@ -1,6 +1,7 @@
 package com.example.hovedopgave_jonasjakobsen.controller;
 
 
+import com.example.hovedopgave_jonasjakobsen.model.CompanyUser;
 import com.example.hovedopgave_jonasjakobsen.repository.EventParticipantRepository;
 import com.example.hovedopgave_jonasjakobsen.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.hovedopgave_jonasjakobsen.model.Event;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+
 import org.springframework.security.core.Authentication;
 
 @Controller
@@ -47,7 +50,13 @@ public class HomeController {
     public String loginPage() {
         return "login/loginPage";
     }
+    @GetMapping("/butikker")
+    public String butikker(Model model) {
 
+        model.addAttribute("butikker", userService.findAllStores());
+
+        return "butikker";
+    }
     @GetMapping("auth/createuser")
     public String createUserPage(){
         return "login/createUser";

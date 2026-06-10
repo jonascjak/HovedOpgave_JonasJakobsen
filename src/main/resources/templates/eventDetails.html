@@ -12,6 +12,7 @@
         <h2 th:text="${event.eventName}">Event:</h2>
         <p th:text="${event.eventGame}"></p>
         <p th:text="${event.Description}"></p>
+        <p th:text="${event.getEventOrganiser().getCompanyAddress()}"></p>
         <p th:text="${event.date}"></p>
         <p th:text="${event.startTime}"></p>
         <h2>Deltager</h2>
@@ -30,7 +31,7 @@
             <button th:if="${!alreadyJoined}" sec:authorize="hasRole('PRIVATE')" type="submit">
                 Deltag
             </button>
-            <span th:if="${alreadyJoined}">Du deltager allerede</span>
+            <span th:if="${alreadyJoined}"> <br> Du deltager allerede</span>
         </form>
 
         <div id="overlay" class="overlay hidden">

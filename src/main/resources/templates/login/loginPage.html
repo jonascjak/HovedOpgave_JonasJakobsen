@@ -13,7 +13,7 @@
 <main layout:fragment="content">
     <div id="login">
 
-        <h1>Figurspil Danmark</h1>
+        <h1>Figurhub</h1>
 
         <form th:action="@{/auth/login}"
               method="post"
@@ -40,7 +40,9 @@
                 Opret bruger
             </button>
         </form>
-
+        <div th:if="${successMessage}" class="success-message">
+            <p th:text="${successMessage}"></p>
+        </div>
     </div>
 </main>
 </body>

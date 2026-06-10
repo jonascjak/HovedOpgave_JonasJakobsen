@@ -199,3 +199,11 @@ footer a{
     justify-content: center;
     align-items: center;
 }
+
+
+.info {
+    margin-left: 2rem;
+    margin-top: 2rem;
+    color: var(--text-dark);
+    font: var(--body-font);
+}

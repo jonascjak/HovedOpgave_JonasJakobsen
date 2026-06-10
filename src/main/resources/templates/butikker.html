@@ -1,10 +1,20 @@
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+><head>
+    <title layout:fragment="title">Butikker</title>
+    <th:block layout:fragment="page-styles">
+    </th:block>
 </head>
 <body>
-
+    <main layout:fragment="content">
+        <div th:each="butik : ${butikker}" class="info">
+            <h3 th:text="${butik.name}"></h3>
+            <p th:text="${butik.companyAddress}"></p>
+            <p th:text="${butik.getCompanyWebsiteURL()}"></p>
+        </div>
+    </main>
 </body>
 </html>

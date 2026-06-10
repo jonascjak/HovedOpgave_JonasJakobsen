@@ -40,6 +40,39 @@ public class TestDataLoader implements CommandLineRunner {
             userRepository.save(companyUser);
         }
 
+        if (userRepository.findByUsername("zzgames").isEmpty()) {
+
+            CompanyUser companyUser = new CompanyUser();
+
+            companyUser.setUsername("zzgames");
+            companyUser.setPassword(passwordEncoder.encode("1234"));
+            companyUser.setName("ZZ GAMES APS");
+
+            companyUser.setRole(Role.COMPANY);
+
+            companyUser.setCompanyAddress("Rugvænget 44");
+            companyUser.setCompanyWebsiteURL("https://zzgames.dk");
+
+            userRepository.save(companyUser);
+        }
+
+
+        if (userRepository.findByUsername("bilag_1").isEmpty()) {
+
+            CompanyUser companyUser = new CompanyUser();
+
+            companyUser.setUsername("bilag_1");
+            companyUser.setPassword(passwordEncoder.encode("1234"));
+            companyUser.setName("Bilag 1");
+
+            companyUser.setRole(Role.COMPANY);
+
+            companyUser.setCompanyAddress("Bilag 1");
+            companyUser.setCompanyWebsiteURL("https://bilag_1.dk");
+
+            userRepository.save(companyUser);
+        }
+
         if (userRepository.findByUsername("private").isEmpty()) {
 
             PrivateUser privateUser = new PrivateUser();
