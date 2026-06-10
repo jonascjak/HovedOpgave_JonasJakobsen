@@ -2,8 +2,10 @@ package com.example.hovedopgave_jonasjakobsen.controller;
 
 
 import com.example.hovedopgave_jonasjakobsen.model.CompanyUser;
-import com.example.hovedopgave_jonasjakobsen.repository.EventParticipantRepository;
-import com.example.hovedopgave_jonasjakobsen.service.EventService;
+import com.example.hovedopgave_jonasjakobsen.model.User;
+import com.example.hovedopgave_jonasjakobsen.model.repository.EventParticipantRepository;
+import com.example.hovedopgave_jonasjakobsen.model.service.EncryptionService;
+import com.example.hovedopgave_jonasjakobsen.model.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,12 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.example.hovedopgave_jonasjakobsen.service.UserService;
+import com.example.hovedopgave_jonasjakobsen.model.service.UserService;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.hovedopgave_jonasjakobsen.model.Event;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
@@ -31,6 +33,10 @@ public class HomeController {
 
     @Autowired
     private EventParticipantRepository eventParticipantRepository;
+
+     @Autowired
+     private EncryptionService encryptionService;
+
     @GetMapping("/")
     public String index(Model model) {
 
@@ -46,17 +52,65 @@ public class HomeController {
 
         return "index";
     }
+
     @GetMapping("/auth/login")
     public String loginPage() {
         return "login/loginPage";
     }
+
     @GetMapping("/butikker")
     public String butikker(Model model) {
 
-        model.addAttribute("butikker", userService.findAllStores());
+        List<CompanyUser> butikker = userService.findAllStores();
+
+        List<String> decryptedNames = butikker.stream()
+                .map(butik -> encryptionService.decrypt(butik.getName()))
+                .toList();
+        model.addAttribute("butikker", butikker);
+        model.addAttribute("decryptedNames", decryptedNames);
 
         return "butikker";
     }
+
+    @GetMapping("/profil")
+    public String profil(Authentication authentication, Model model){
+        User user = userService.findByUsername(authentication.getName());
+        String name = encryptionService.decrypt(user.getName());
+            model.addAttribute("user", user);
+            model.addAttribute("decryptedName", name);
+            return "profil";
+    }
+
+    @PostMapping("/profil/update")
+    public String updateProfile(@RequestParam long id,
+                                @RequestParam String username,
+                                @RequestParam String name,
+                                @RequestParam String password,
+                                @RequestParam String passwordCheck,
+                                Authentication authentication,
+                                RedirectAttributes redirectAttributes) {
+
+        try {
+            userService.updateUser(id, username, name, password, passwordCheck, authentication);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/profil";
+        }
+
+        return "redirect:/logout";
+    }
+
+    @PostMapping("/profil/delete")
+    public String deleteProfile(@RequestParam long id, RedirectAttributes redirectAttributes, Authentication authentication){
+        try{
+            userService.deleteUser(id, authentication);
+        } catch(RuntimeException e){
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/profil";
+        }
+    return "redirect:/logout";
+    }
+
     @GetMapping("auth/createuser")
     public String createUserPage(){
         return "login/createUser";
@@ -152,5 +206,20 @@ public class HomeController {
         eventService.deleteEvent(id);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/privatlivspolitik")
+    public String privatlivspolitik() {
+        return "privatliv";
+    }
+
+    @GetMapping("/om-os")
+    public String omOs() {
+        return "omOs";
+    }
+
+    @GetMapping("/kontakt")
+    public String kontakt() {
+        return "kontakt";
     }
 }

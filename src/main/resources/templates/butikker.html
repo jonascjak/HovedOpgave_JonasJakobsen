@@ -10,10 +10,12 @@
 </head>
 <body>
     <main layout:fragment="content">
-        <div th:each="butik : ${butikker}" class="info">
-            <h3 th:text="${butik.name}"></h3>
+        <div th:each="butik, stat : ${butikker}" class="info">
+            <h3 th:text="${decryptedNames[stat.index]}"></h3>
             <p th:text="${butik.companyAddress}"></p>
-            <p th:text="${butik.getCompanyWebsiteURL()}"></p>
+            <a th:href="${butik.getCompanyWebsiteURL()}" th:text="${butik.companyWebsiteURL}"
+            target="_blank">
+            ></a>
         </div>
     </main>
 </body>

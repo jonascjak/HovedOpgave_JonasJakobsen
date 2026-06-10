@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title layout:fragment="title">Profil</title>
+    <th:block layout:fragment="page-styles">
+        <script th:src="@{/js/profileLogic.js}"></script>
+    </th:block>
 </head>
 <body>
+    <main layout:fragment="content">
+        <div class="info">
+        <h2 th:text="${user.getUsername()}">:</h2>
+        <p th:text="${decryptedName}"></p>
+            <button
+                    class="button" style="max-width: 10rem;" onclick="openEditModal()">
+                <span>Redigere Profil</span>
+            </button>
+            <form th:action="@{/profil/delete}" method="post" onsubmit="return deleteProfile()">
+                <input type="hidden" name="id" th:value="${user.id}">
+                <button class="button" style="max-width: 10rem;" type="submit">
+                    <span>Slet profil</span>
+                </button>
+            </form>
 
+        <div id="overlay" class="overlay hidden">
+            <div id="popup-content" class="modal">
+                <button type="button" style="max-width: 10rem;" onclick="closeOverlay()">X</button>
+                <h2>Redigere profil</h2>
+                <form th:action="@{/profil/update}" method="post" onsubmit="return validatePasswordMatch()">
+
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <label>Brugernavn</label>
+                    <input type="text" name="username" th:value="${user.getUsername()}">
+                    <label>Navn</label>
+                    <input type="text" name="name" th:value="${decryptedName}">
+                    <label>Kodeord</label>
+                    <input type="password" id="password" name="password">
+                    <label>Gentag Kodeord</label>
+                    <input type="password" id="passwordCheck" name="passwordCheck">
+                    <p id="error" class="error-message"></p>
+                    <p th:if="${error}" th:text="${error}" class="error-message"></p>
+                    <button type="submit">Gem Ændringer</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </main>
 </body>
 </html>

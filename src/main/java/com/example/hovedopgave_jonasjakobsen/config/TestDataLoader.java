@@ -3,7 +3,8 @@ package com.example.hovedopgave_jonasjakobsen.config;
 import com.example.hovedopgave_jonasjakobsen.model.Role;
 import com.example.hovedopgave_jonasjakobsen.model.CompanyUser;
 import com.example.hovedopgave_jonasjakobsen.model.PrivateUser;
-import com.example.hovedopgave_jonasjakobsen.repository.UserRepository;
+import com.example.hovedopgave_jonasjakobsen.model.repository.UserRepository;
+import com.example.hovedopgave_jonasjakobsen.model.service.EncryptionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,13 @@ public class TestDataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final EncryptionService encryptionService;
     public TestDataLoader(UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder, EncryptionService encryptionService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.encryptionService = encryptionService;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class TestDataLoader implements CommandLineRunner {
 
             companyUser.setUsername("company");
             companyUser.setPassword(passwordEncoder.encode("1234"));
-            companyUser.setName("Test Company");
+            companyUser.setName(encryptionService.encrypt("Test Company"));
 
             companyUser.setRole(Role.COMPANY);
 
@@ -46,7 +49,7 @@ public class TestDataLoader implements CommandLineRunner {
 
             companyUser.setUsername("zzgames");
             companyUser.setPassword(passwordEncoder.encode("1234"));
-            companyUser.setName("ZZ GAMES APS");
+            companyUser.setName(encryptionService.encrypt("ZZGames"));
 
             companyUser.setRole(Role.COMPANY);
 
@@ -57,29 +60,13 @@ public class TestDataLoader implements CommandLineRunner {
         }
 
 
-        if (userRepository.findByUsername("bilag_1").isEmpty()) {
-
-            CompanyUser companyUser = new CompanyUser();
-
-            companyUser.setUsername("bilag_1");
-            companyUser.setPassword(passwordEncoder.encode("1234"));
-            companyUser.setName("Bilag 1");
-
-            companyUser.setRole(Role.COMPANY);
-
-            companyUser.setCompanyAddress("Bilag 1");
-            companyUser.setCompanyWebsiteURL("https://bilag_1.dk");
-
-            userRepository.save(companyUser);
-        }
-
         if (userRepository.findByUsername("private").isEmpty()) {
 
             PrivateUser privateUser = new PrivateUser();
 
             privateUser.setUsername("private");
             privateUser.setPassword(passwordEncoder.encode("1234"));
-            privateUser.setName("Private Test User");
+            privateUser.setName(encryptionService.encrypt("Private Test User"));
 
             privateUser.setRole(Role.PRIVATE);
 

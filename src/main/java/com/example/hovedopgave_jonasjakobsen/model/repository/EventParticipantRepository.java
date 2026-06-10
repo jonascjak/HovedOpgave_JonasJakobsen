@@ -1,4 +1,4 @@
-package com.example.hovedopgave_jonasjakobsen.repository;
+package com.example.hovedopgave_jonasjakobsen.model.repository;
 
 import com.example.hovedopgave_jonasjakobsen.model.EventParticipant;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.hovedopgave_jonasjakobsen.repository;
+package com.example.hovedopgave_jonasjakobsen.model.repository;
 
 
 import com.example.hovedopgave_jonasjakobsen.model.CompanyUser;
@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     List<CompanyUser> findByRole(Role role);
+
+    Boolean existsByUsername(String username);
 }

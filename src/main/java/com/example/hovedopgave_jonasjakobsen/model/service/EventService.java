@@ -1,9 +1,9 @@
-package com.example.hovedopgave_jonasjakobsen.service;
+package com.example.hovedopgave_jonasjakobsen.model.service;
 
 import com.example.hovedopgave_jonasjakobsen.model.*;
-import com.example.hovedopgave_jonasjakobsen.repository.EventParticipantRepository;
-import com.example.hovedopgave_jonasjakobsen.repository.EventRepository;
-import com.example.hovedopgave_jonasjakobsen.repository.UserRepository;
+import com.example.hovedopgave_jonasjakobsen.model.repository.EventParticipantRepository;
+import com.example.hovedopgave_jonasjakobsen.model.repository.EventRepository;
+import com.example.hovedopgave_jonasjakobsen.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

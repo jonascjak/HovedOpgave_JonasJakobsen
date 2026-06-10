@@ -15,14 +15,15 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index","/auth/**", "/css/**", "/js/**", "/butikker").permitAll()
+                        .requestMatchers("/", "/index","/auth/**", "/css/**", "/js/**", "/butikker", "/om-os", "/privatlivspolitik", "/kontakt").permitAll()
                         .requestMatchers("/event/create").hasRole("COMPANY")
-                        .requestMatchers("/event/**","/profil").authenticated()
+                        .requestMatchers("/event/**","/profil", "/profil/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
+                        .failureUrl("/auth/login?error=true")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )

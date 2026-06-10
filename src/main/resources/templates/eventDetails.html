@@ -19,16 +19,16 @@
         <li th:each="participant : ${event.participants}" th:text="${participant.getPrivateUser().getUsername()}"></li>
         <button
                 sec:authorize="hasRole('COMPANY')"
-                class="button" onclick="openEditModal()">
+                class="button" style="max-width: 10rem;" onclick="openEditModal()">
             <span>Redigere Event</span>
         </button>
         <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post">
-            <button sec:authorize="hasRole('COMPANY')" class="button" onclick="return deleteEvent()">
+            <button sec:authorize="hasRole('COMPANY')" class="button" style="max-width: 10rem;" onclick="return deleteEvent()">
                 Slet Event
             </button>
         </form>
         <form th:action="@{/event/{id}/join(id=${event.id})}" method="post">
-            <button th:if="${!alreadyJoined}" sec:authorize="hasRole('PRIVATE')" type="submit">
+            <button th:if="${!alreadyJoined}" sec:authorize="hasRole('PRIVATE')" style="max-width: 10rem;" type="submit">
                 Deltag
             </button>
             <span th:if="${alreadyJoined}"> <br> Du deltager allerede</span>

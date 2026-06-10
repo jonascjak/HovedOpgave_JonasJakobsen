@@ -1,4 +1,4 @@
-package com.example.hovedopgave_jonasjakobsen.service;
+package com.example.hovedopgave_jonasjakobsen.model.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.Encryptors;
