@@ -31,8 +31,8 @@ public class Event {
 
     private String address;
 
-    @ManyToOne
-    @Column(nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_organiser_id", nullable = false)
     private CompanyUser eventOrganiser;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)

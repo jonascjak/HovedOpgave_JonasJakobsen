@@ -97,7 +97,7 @@ public class HomeController {
             return "redirect:/profil";
         }
 
-        return "redirect:/logout";
+        return "redirect:/";
     }
 
     @PostMapping("/profil/delete")
@@ -108,7 +108,7 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/profil";
         }
-    return "redirect:/logout";
+    return "redirect:/";
     }
 
     @GetMapping("auth/createuser")

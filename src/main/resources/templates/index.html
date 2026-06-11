@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{fragments/layout}">
 <head>
     <title layout:fragment="title">Index</title>
@@ -46,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div id="overlay" class="overlay hidden">
+            <div sec:authorize="hasRole('COMPANY')" id="overlay" class="overlay hidden">
                 <div id="popup-content" class="modal">
                     <button type="button" onclick="closeOverlay()">X</button>
                     <h2>Opret Event</h2>

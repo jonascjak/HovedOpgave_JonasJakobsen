@@ -28,6 +28,7 @@
             </button>
         </form>
         <form th:action="@{/event/{id}/join(id=${event.id})}" method="post">
+
             <button th:if="${!alreadyJoined}" sec:authorize="hasRole('PRIVATE')" style="max-width: 10rem;" type="submit">
                 Deltag
             </button>
@@ -39,6 +40,7 @@
                 <button type="button" onclick="closeOverlay()">X</button>
                 <h2>Redigere Event</h2>
                 <form th:action="@{/event/update}" method="post">
+
                     <input type="hidden" name="id" th:value="${event.id}">
 
                     <label>Event Navn</label>
