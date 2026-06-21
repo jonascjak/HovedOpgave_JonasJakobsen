@@ -6,6 +6,8 @@ import com.example.hovedopgave_jonasjakobsen.model.User;
 import com.example.hovedopgave_jonasjakobsen.model.repository.EventParticipantRepository;
 import com.example.hovedopgave_jonasjakobsen.model.service.EncryptionService;
 import com.example.hovedopgave_jonasjakobsen.model.service.EventService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ import com.example.hovedopgave_jonasjakobsen.model.Event;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import org.springframework.security.core.Authentication;
 
@@ -88,7 +91,8 @@ public class HomeController {
                                 @RequestParam String password,
                                 @RequestParam String passwordCheck,
                                 Authentication authentication,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,HttpServletRequest request,
+                                HttpServletResponse response) {
 
         try {
             userService.updateUser(id, username, name, password, passwordCheck, authentication);
@@ -96,19 +100,21 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/profil";
         }
-
-        return "redirect:/";
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return "redirect:/auth/login";
     }
 
     @PostMapping("/profil/delete")
-    public String deleteProfile(@RequestParam long id, RedirectAttributes redirectAttributes, Authentication authentication){
+    public String deleteProfile(@RequestParam long id, RedirectAttributes redirectAttributes, Authentication authentication, HttpServletRequest request, HttpServletResponse response){
         try{
             userService.deleteUser(id, authentication);
         } catch(RuntimeException e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/profil";
         }
-    return "redirect:/";
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+
+        return "redirect:/";
     }
 
     @GetMapping("auth/createuser")
@@ -143,10 +149,18 @@ public class HomeController {
     public String eventDetails(@PathVariable long id, Authentication authentication, Model model) {
         Event event = eventService.findById(id);
 
+
         boolean alreadyJoined = eventParticipantRepository.existsByEventIdAndPrivateUserUsername(id, authentication.getName());
+        boolean canEditEvent = false;
+        User loggedInUser = userService.findByUsername(authentication.getName());
+        if (loggedInUser instanceof CompanyUser companyUser) {
+            canEditEvent = event.getEventOrganiser().getId() == companyUser.getId();
+        }
+
         if(event != null) {
             model.addAttribute("event", event);
             model.addAttribute("alreadyJoined", alreadyJoined);
+            model.addAttribute("canEditEvent", canEditEvent);
             return "eventDetails";
         }
         return "redirect:/";
@@ -202,8 +216,8 @@ public class HomeController {
     }
 
     @PostMapping("/event/{id}/delete")
-    public String deleteEvent(@PathVariable long id){
-        eventService.deleteEvent(id);
+    public String deleteEvent(@PathVariable long id, Authentication authentication){
+        eventService.deleteEvent(id, authentication);
 
         return "redirect:/";
     }

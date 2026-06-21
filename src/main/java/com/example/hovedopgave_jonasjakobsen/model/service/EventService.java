@@ -5,6 +5,7 @@ import com.example.hovedopgave_jonasjakobsen.model.repository.EventParticipantRe
 import com.example.hovedopgave_jonasjakobsen.model.repository.EventRepository;
 import com.example.hovedopgave_jonasjakobsen.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -95,7 +96,20 @@ public class EventService {
         return true;
     }
 
-    public void deleteEvent(long id) {
+    public void deleteEvent(long id, Authentication authentication)
+    {
+        Event event = eventRepository.getById(id);
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         eventRepository.deleteById(id);
+
+        if (!(user instanceof CompanyUser companyUser)) {
+            throw new RuntimeException("Unable to delete");
+        }
+
+        if (event.getEventOrganiser().getId() != companyUser.getId()) {
+            throw new RuntimeException("You can only delete your own events");
+        }
+        eventRepository.delete(event);
     }
 }

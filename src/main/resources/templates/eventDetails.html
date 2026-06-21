@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{fragments/layout}">
 <head>
     <meta charset="UTF-8">
@@ -18,12 +18,12 @@
         <h2>Deltager</h2>
         <li th:each="participant : ${event.participants}" th:text="${participant.getPrivateUser().getUsername()}"></li>
         <button
-                sec:authorize="hasRole('COMPANY')"
+               th:if="${canEditEvent}"
                 class="button" style="max-width: 10rem;" onclick="openEditModal()">
             <span>Redigere Event</span>
         </button>
         <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post">
-            <button sec:authorize="hasRole('COMPANY')" class="button" style="max-width: 10rem;" onclick="return deleteEvent()">
+            <button th:if="${canEditEvent}" class="button" style="max-width: 10rem;" onclick="return deleteEvent()">
                 Slet Event
             </button>
         </form>
